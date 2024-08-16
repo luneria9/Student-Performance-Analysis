@@ -24,24 +24,25 @@ def get_student_data():
 student_df = get_student_data()
 
 # DATA CLEANING
-student_df.drop(student_df[student_df["STUDENT ID"] == "STUDENT5"].index, inplace=True)
-student_df.drop(student_df[student_df["STUDENT ID"] == "STUDENT9"].index, inplace=True)
-
 # Drop irrelevant columns
-student_df.drop(columns=["Sex",
-                         "Flip-classroom", 
-                         "Expected Cumulative grade point average in the graduation (/4.00)",
-                         "Mother’s education", 
-                         "Father’s education ", 
-                         "Student Age", 
-                         "Graduated high-school type", 
-                         "Scholarship type", 
-                         "Additional work", 
-                         "Regular artistic or sports activity", 
-                         "Total salary if available", 
-                         "Transportation to the university", 
-                         "Number of sisters/brothers", 
-                         "Mother’s occupation"], inplace=True)
+columns_to_drop = ["Sex", 
+                    "Flip-classroom", 
+                    "Expected Cumulative grade point average in the graduation (/4.00)", 
+                    "Mother’s education", 
+                    "Father’s education ", 
+                    "Student Age", 
+                    "Graduated high-school type", 
+                    "Scholarship type", 
+                    "Additional work", 
+                    "Regular artistic or sports activity", 
+                    "Total salary if available", 
+                    "Transportation to the university", 
+                    "Number of sisters/brothers", 
+                    "Mother’s occupation"]
+
+# Ensure columns to drop exist in the DataFrame
+columns_to_drop = [col for col in columns_to_drop if col in student_df.columns]
+student_df.drop(columns=columns_to_drop, inplace=True)
 
 # Define X (features) and y (target)
 X = student_df.drop(columns=["STUDENT ID", "GRADE"])
