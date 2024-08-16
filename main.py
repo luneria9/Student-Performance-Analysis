@@ -117,3 +117,34 @@ encoded_inputs = [
     encoders['Impact of your projects/activities on your success'][project_impact],
     encoders['Preparation to midterm exams 1'][preparation_midterm]
 ]
+
+# Create a DataFrame for the user input, matching the selected features
+user_input_df = pd.DataFrame([encoded_inputs], columns=selected_features)
+
+# Preprocess the user input to match the training data preprocessing
+user_input_preprocessed = user_input_df.copy()
+
+# Define the mapping for letter grades
+grade_mapping = {
+    0: 'Fail',
+    1: 'DD',
+    2: 'DC',
+    3: 'CC',
+    4: 'CB',
+    5: 'BB',
+    6: 'BA',
+    7: 'AA'
+}
+
+# Add a button for prediction
+if st.button('Predict Grade'):
+    predicted_grade = model.predict(user_input_preprocessed)
+
+    # Ensure the prediction is not below 0 or above 7
+    predicted_grade = min(max(predicted_grade[0], 0), 7)
+    predicted_grade_rounded = round(predicted_grade, 0)
+
+    # Map the numeric grade to a letter grade
+    letter_grade = grade_mapping.get(predicted_grade_rounded, 'Unknown')
+
+    st.write(f'Predicted Grade: {predicted_grade_rounded} ({letter_grade})')
