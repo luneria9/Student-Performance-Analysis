@@ -8,7 +8,7 @@ from sklearn.neural_network import MLPRegressor
 # Set the title and favicon that appear in the Browser's tab bar.
 st.set_page_config(
     page_title='Student Performance Analysis',
-    page_icon=':earth_americas:', # This is an emoji shortcode. Could be a URL too.
+    page_icon=':bar_chart:',
 )
 
 # -----------------------------------------------------------------------------
