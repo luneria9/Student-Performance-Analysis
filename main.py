@@ -50,7 +50,7 @@ y = student_df["GRADE"]
 
 # Apply SelectKBest to select top features
 feature_names = X.columns
-selector = SelectKBest(chi2, k=8)
+selector = SelectKBest(chi2, k=10)
 X_selected = selector.fit_transform(X, y)
 selected_features = feature_names[selector.get_support()]
 
@@ -88,6 +88,8 @@ study_hours = st.selectbox('Weekly study hours', ['None', '<5 hours', '6-10 hour
 reading_frequency = st.selectbox('Reading frequency (non-scientific books/journals)', ['None', 'Sometimes', 'Often'])
 project_impact = st.selectbox('Impact of your projects/activities on your success', ['positive', 'negative', 'neutral'])
 preparation_midterm = st.selectbox('Preparation to midterm exams 1', ['alone', 'with friends', 'not applicable'])
+cumulative_gpa = st.selectbox('Cumulative grade point average in the last semester (/4.00)', ['0-1', '1-2', '2-3', '3-4'])
+course_id = st.selectbox('COURSE ID', student_df['COURSE ID'].unique())
 
 # Define encoders that match selected_features
 def create_encoders():
@@ -99,7 +101,9 @@ def create_encoders():
         'Weekly study hours': {'None': 1, '<5 hours': 2, '6-10 hours': 3, '11-20 hours': 4, 'more than 20 hours': 5},
         'Reading frequency (non-scientific books/journals)': {'None': 1, 'Sometimes': 2, 'Often': 3},
         'Impact of your projects/activities on your success': {'positive': 1, 'neutral': 2, 'negative': 3},
-        'Preparation to midterm exams 1': {'alone': 1, 'with friends': 2, 'not applicable': 3}
+        'Preparation to midterm exams 1': {'alone': 1, 'with friends': 2, 'not applicable': 3},
+        'Cumulative grade point average in the last semester (/4.00)': {'0-1': 1, '1-2': 2, '2-3': 3, '3-4': 4},
+        'COURSE ID': {id: idx+1 for idx, id in enumerate(student_df['COURSE ID'].unique())}
     }
     return encoders
 
@@ -113,9 +117,11 @@ encoded_inputs = [
     encoders['Parental status'][parental_status],
     encoders['Father’s occupation'][father_occupation],
     encoders['Weekly study hours'][study_hours],
-    encoders['Reading frequency (non-scientific books/journals)'][reading_frequency],  # Correct key here
+    encoders['Reading frequency (non-scientific books/journals)'][reading_frequency],
     encoders['Impact of your projects/activities on your success'][project_impact],
-    encoders['Preparation to midterm exams 1'][preparation_midterm]
+    encoders['Preparation to midterm exams 1'][preparation_midterm],
+    encoders['Cumulative grade point average in the last semester (/4.00)'][cumulative_gpa],
+    encoders['COURSE ID'][course_id]
 ]
 
 # Create a DataFrame for the user input, matching the selected features
@@ -140,8 +146,8 @@ grade_mapping = {
 if st.button('Predict Grade'):
     predicted_grade = model.predict(user_input_preprocessed)
 
-    # Ensure the prediction is not below 0 or above 7
-    predicted_grade = min(max(predicted_grade[0], 0), 7)
+    # Ensure the prediction is not below 0 or above 4
+    predicted_grade = min(max(predicted_grade[0], 0), 4)
     predicted_grade_rounded = round(predicted_grade, 0)
 
     # Map the numeric grade to a letter grade
