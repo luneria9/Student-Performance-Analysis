@@ -131,12 +131,9 @@ user_input_preprocessed = user_input_df.copy()
 grade_mapping = {
     0: 'Fail',
     1: 'DD',
-    2: 'DC',
-    3: 'CC',
-    4: 'CB',
-    5: 'BB',
-    6: 'BA',
-    7: 'AA'
+    2: 'CC',
+    3: 'BB',
+    4: 'AA'
 }
 
 # Add a button for prediction
