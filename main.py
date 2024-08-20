@@ -87,8 +87,8 @@ father_occupation = st.selectbox('Father’s occupation', ['retired', 'governmen
 study_hours = st.selectbox('Weekly study hours', ['None', '<5 hours', '6-10 hours', '11-20 hours', 'more than 20 hours'])
 reading_frequency = st.selectbox('Reading frequency (non-scientific books/journals)', ['None', 'Sometimes', 'Often'])
 project_impact = st.selectbox('Impact of your projects/activities on your success', ['positive', 'negative', 'neutral'])
-preparation_midterm = st.selectbox('Preparation to midterm exams 1', ['alone', 'with friends', 'not applicable'])
-cumulative_gpa = st.selectbox('Cumulative grade point average in the last semester (/4.00)', ['0-1', '1-2', '2-3', '3-4'])
+preparation_midterm = st.selectbox('How do you prepare for midterm exams?', ['alone', 'with friends', 'not applicable'])
+cumulative_gpa = st.selectbox('Cumulative grade point average in the last semester (/4.00)', ['<2.00', '2.00-2.49', '2.50-2.99', '3.00-3.49', 'above 3.49'])
 
 # Define encoders that match selected_features
 def create_encoders():
@@ -100,8 +100,8 @@ def create_encoders():
         'Weekly study hours': {'None': 1, '<5 hours': 2, '6-10 hours': 3, '11-20 hours': 4, 'more than 20 hours': 5},
         'Reading frequency (non-scientific books/journals)': {'None': 1, 'Sometimes': 2, 'Often': 3},
         'Impact of your projects/activities on your success': {'positive': 1, 'neutral': 2, 'negative': 3},
-        'Preparation to midterm exams 1': {'alone': 1, 'with friends': 2, 'not applicable': 3},
-        'Cumulative grade point average in the last semester (/4.00)': {'0-1': 1, '1-2': 2, '2-3': 3, '3-4': 4}
+        'How do you prepare for midterm exams?': {'alone': 1, 'with friends': 2, 'not applicable': 3},
+        'Cumulative grade point average in the last semester (/4.00)': {'<2.00': 1, '2.00-2.49': 2, '2.50-2.99': 3, '3.00-3.49': 4, 'above 3.49': 5}
     }
     return encoders
 
@@ -117,7 +117,7 @@ encoded_inputs = [
     encoders['Weekly study hours'][study_hours],
     encoders['Reading frequency (non-scientific books/journals)'][reading_frequency],
     encoders['Impact of your projects/activities on your success'][project_impact],
-    encoders['Preparation to midterm exams 1'][preparation_midterm],
+    encoders['How do you prepare for midterm exams?'][preparation_midterm],
     encoders['Cumulative grade point average in the last semester (/4.00)'][cumulative_gpa],
 ]
 
