@@ -50,7 +50,7 @@ y = student_df["GRADE"]
 
 # Apply SelectKBest to select top features
 feature_names = X.columns
-selector = SelectKBest(chi2, k=10)
+selector = SelectKBest(chi2, k=9)
 X_selected = selector.fit_transform(X, y)
 selected_features = feature_names[selector.get_support()]
 
@@ -89,7 +89,6 @@ reading_frequency = st.selectbox('Reading frequency (non-scientific books/journa
 project_impact = st.selectbox('Impact of your projects/activities on your success', ['positive', 'negative', 'neutral'])
 preparation_midterm = st.selectbox('Preparation to midterm exams 1', ['alone', 'with friends', 'not applicable'])
 cumulative_gpa = st.selectbox('Cumulative grade point average in the last semester (/4.00)', ['0-1', '1-2', '2-3', '3-4'])
-course_id = st.selectbox('COURSE ID', student_df['COURSE ID'].unique())
 
 # Define encoders that match selected_features
 def create_encoders():
@@ -102,8 +101,7 @@ def create_encoders():
         'Reading frequency (non-scientific books/journals)': {'None': 1, 'Sometimes': 2, 'Often': 3},
         'Impact of your projects/activities on your success': {'positive': 1, 'neutral': 2, 'negative': 3},
         'Preparation to midterm exams 1': {'alone': 1, 'with friends': 2, 'not applicable': 3},
-        'Cumulative grade point average in the last semester (/4.00)': {'0-1': 1, '1-2': 2, '2-3': 3, '3-4': 4},
-        'COURSE ID': {id: idx+1 for idx, id in enumerate(student_df['COURSE ID'].unique())}
+        'Cumulative grade point average in the last semester (/4.00)': {'0-1': 1, '1-2': 2, '2-3': 3, '3-4': 4}
     }
     return encoders
 
@@ -121,7 +119,6 @@ encoded_inputs = [
     encoders['Impact of your projects/activities on your success'][project_impact],
     encoders['Preparation to midterm exams 1'][preparation_midterm],
     encoders['Cumulative grade point average in the last semester (/4.00)'][cumulative_gpa],
-    encoders['COURSE ID'][course_id]
 ]
 
 # Create a DataFrame for the user input, matching the selected features
