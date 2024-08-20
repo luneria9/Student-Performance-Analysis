@@ -58,7 +58,7 @@ selected_features = feature_names[selector.get_support()]
 X_selected_df = pd.DataFrame(X_selected, columns=selected_features)
 
 # Split the data into training and test sets
-X_train, X_test, y_train, y_test = train_test_split(X_selected_df, y, test_size=0.2, random_state=42)
+X_train, X_test, y_train, y_test = train_test_split(X_selected_df, y, test_size=0.1, random_state=0)
 
 # Define a simple model
 model = MLPRegressor(hidden_layer_sizes=(50,), max_iter=500, random_state=42)
