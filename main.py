@@ -17,7 +17,7 @@ st.set_page_config(
 @st.cache_data
 def get_student_data():
     # Grab student performance data from a CSV file.
-    DATA_FILENAME = Path(__file__).parent/'data/StudentsPerformance_with_headers.csv'
+    DATA_FILENAME = Path(__file__).parent / 'data/StudentsPerformance_with_headers.csv'
     student_df = pd.read_csv(DATA_FILENAME)
     return student_df
 
@@ -46,6 +46,30 @@ student_df.drop(columns=columns_to_drop, inplace=True)
 
 # Define X (features) and y (target)
 X = student_df.drop(columns=["STUDENT ID", "GRADE"])
+y = student_df["GRADE"]
+
+# Group the grades into 5 categories instead of 8
+def categorize_grade(grade):
+    match grade:
+        case 0:
+            return 0
+        case 1:
+            return 1
+        case 2:
+            return 1
+        case 3:
+            return 2
+        case 4:
+            return 2
+        case 5:
+            return 3
+        case 6:
+            return 3
+        case 7:
+            return 4
+
+# Apply the categorization to the 'GRADE' column of the DataFrame
+student_df["GRADE"] = student_df["GRADE"].apply(categorize_grade)
 y = student_df["GRADE"]
 
 # Apply SelectKBest to select top features
