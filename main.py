@@ -1,9 +1,13 @@
+import os
+import keras
 import pandas as pd
 import streamlit as st
 from pathlib import Path
 from sklearn.feature_selection import SelectKBest, chi2
 from sklearn.model_selection import train_test_split
 from sklearn.neural_network import MLPRegressor
+
+BEST_MODEL_FILEPATH = os.path.join('best_model_v4.3.h5.keras')
 
 # Set the title and favicon that appear in the Browser's tab bar.
 st.set_page_config(
@@ -74,21 +78,20 @@ y = student_df["GRADE"]
 
 # Apply SelectKBest to select top features
 feature_names = X.columns
-selector = SelectKBest(chi2, k=9)
+selector = SelectKBest(chi2, k=10)
 X_selected = selector.fit_transform(X, y)
 selected_features = feature_names[selector.get_support()]
 
 # Create a DataFrame with selected features
 X_selected_df = pd.DataFrame(X_selected, columns=selected_features)
+print(X_selected_df.shape[0])
 
 # Split the data into training and test sets
 X_train, X_test, y_train, y_test = train_test_split(X_selected_df, y, test_size=0.1, random_state=0)
 
 # Define a simple model
-model = MLPRegressor(hidden_layer_sizes=(50,), max_iter=500, random_state=42)
+model = keras.models.load_model(BEST_MODEL_FILEPATH)
 
-# Train the model
-model.fit(X_train, y_train)
 
 # -----------------------------------------------------------------------------
 # Draw the actual page
@@ -114,6 +117,7 @@ reading_frequency = st.selectbox('Reading frequency (non-scientific books/journa
 project_impact = st.selectbox('Impact of your projects/activities on your success', ['positive', 'negative', 'neutral'])
 preparation_midterm = st.selectbox('How do you prepare for midterm exams?', ['alone', 'with friends', 'not applicable'])
 cumulative_gpa = st.selectbox('Cumulative grade point average in the last semester (/4.00)', ['<2.00', '2.00-2.49', '2.50-2.99', '3.00-3.49', 'above 3.49'])
+course_id = st.selectbox('COURSE ID', ['1', '2', '3', '4', '5', '6', '7', '8', '9'])
 
 # Define encoders that match selected_features
 def create_encoders():
@@ -126,7 +130,8 @@ def create_encoders():
         'Reading frequency (non-scientific books/journals)': {'None': 1, 'Sometimes': 2, 'Often': 3},
         'Impact of your projects/activities on your success': {'positive': 1, 'neutral': 2, 'negative': 3},
         'How do you prepare for midterm exams?': {'alone': 1, 'with friends': 2, 'not applicable': 3},
-        'Cumulative grade point average in the last semester (/4.00)': {'<2.00': 1, '2.00-2.49': 2, '2.50-2.99': 3, '3.00-3.49': 4, 'above 3.49': 5}
+        'Cumulative grade point average in the last semester (/4.00)': {'<2.00': 1, '2.00-2.49': 2, '2.50-2.99': 3, '3.00-3.49': 4, 'above 3.49': 5},
+        'COURSE ID': {'1': 1, '2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7, '8': 8, '9': 9}
     }
     return encoders
 
@@ -144,6 +149,7 @@ encoded_inputs = [
     encoders['Impact of your projects/activities on your success'][project_impact],
     encoders['How do you prepare for midterm exams?'][preparation_midterm],
     encoders['Cumulative grade point average in the last semester (/4.00)'][cumulative_gpa],
+    encoders['COURSE ID'][course_id],
 ]
 
 # Create a DataFrame for the user input, matching the selected features
@@ -151,6 +157,8 @@ user_input_df = pd.DataFrame([encoded_inputs], columns=selected_features)
 
 # Preprocess the user input to match the training data preprocessing
 user_input_preprocessed = user_input_df.copy()
+
+print(user_input_preprocessed)
 
 # Define the mapping for letter grades
 grade_mapping = {
@@ -163,11 +171,13 @@ grade_mapping = {
 
 # Add a button for prediction
 if st.button('Predict Grade'):
+    print(BEST_MODEL_FILEPATH)
     predicted_grade = model.predict(user_input_preprocessed)
 
     # Ensure the prediction is not below 0 or above 4
-    predicted_grade = min(max(predicted_grade[0], 0), 4)
-    predicted_grade_rounded = round(predicted_grade, 0)
+    # predicted_grade = min(max(predicted_grade[0], 0), 4)
+    print(predicted_grade)
+    predicted_grade_rounded = round(predicted_grade[0][0], 0)
 
     # Map the numeric grade to a letter grade
     letter_grade = grade_mapping.get(predicted_grade_rounded, 'Unknown')
