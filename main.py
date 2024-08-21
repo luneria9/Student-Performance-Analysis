@@ -102,6 +102,7 @@ st.write(student_df.head())
 
 # Create select boxes for user inputs
 st.sidebar.header('Select Features for Prediction')
+st.sidebar.image("background.jpg")
 
 # Define the select boxes
 partner = st.selectbox('Do you have a partner', ['Yes', 'No'])
